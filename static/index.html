@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise AI Assistant</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { 
+            font-family: 'Inter', sans-serif; 
+            background-color: #f3f4f6;
+            color: #111827;
+        }
+
+        .premium-shadow {
+            box-shadow: 0 20px 40px -15px rgba(0,0,0,0.05), 0 0 20px rgba(0,0,0,0.02);
+        }
+        
+        .upload-btn {
+            background: #ffffff;
+            border: 2px dashed #cbd5e1;
+            transition: all 0.3s ease;
+        }
+        .upload-btn:hover {
+            border-color: #007AFF;
+            background: #f0f7ff;
+            transform: translateY(-2px);
+        }
+
+        .chat-user {
+            background: linear-gradient(135deg, #007AFF 0%, #0056b3 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+            box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39);
+        }
+        
+        .chat-ai {
+            background: #ffffff;
+            color: #374151;
+            border-bottom-left-radius: 4px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+            border: 1px solid #e5e7eb;
+        }
+
+        .input-wrapper {
+            background: white;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.03);
+        }
+        
+        .send-btn {
+            background: #007AFF;
+            box-shadow: 0 4px 14px 0 rgba(0, 118, 255, 0.39);
+            transition: all 0.2s ease;
+        }
+        .send-btn:hover { transform: scale(1.05); }
+        .send-btn:active { transform: scale(0.95); }
+
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #d1d5db; border-radius: 10px; }
+        ::-webkit-scrollbar-thumb:hover { background: #9ca3af; }
+
+        
+        .dot { animation: dotFade 1.4s infinite ease-in-out both; }
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        @keyframes dotFade { 0%, 80%, 100% { opacity: 0; transform: scale(0.8); } 40% { opacity: 1; transform: scale(1); } }
+    </style>
+</head>
+<body class="h-screen flex items-center justify-center p-4 sm:p-6 bg-[url('https://www.transparenttextures.com/patterns/cubes.png')]">
+
+    <div class="w-full max-w-[1200px] h-[90vh] flex flex-col md:flex-row gap-6">
+        
+       
+        <aside class="w-full md:w-80 bg-white rounded-3xl premium-shadow flex flex-col overflow-hidden relative">
+            <div class="p-6 bg-slate-50 border-b border-slate-100">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl bg-blue-100 flex items-center justify-center text-blue-600">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path></svg>
+                    </div>
+                    <div>
+                        <h1 class="text-lg font-bold text-slate-800 tracking-tight">DocuMind Core</h1>
+                        <p class="text-xs text-slate-500 font-medium">Enterprise Assistant</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="p-6 flex-1 flex flex-col gap-6">
+                <div id="keyBadge" class="hidden bg-red-50 text-red-600 border border-red-100 p-3 rounded-xl text-xs font-semibold flex items-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path></svg>
+                    API Key Configuration Required
+                </div>
+
+               
+                <div>
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-3">Knowledge Base</h2>
+                    <input type="file" id="pdfInput" accept=".pdf" class="hidden" onchange="uploadPDF()">
+                    <label for="pdfInput" class="upload-btn cursor-pointer w-full rounded-2xl p-6 flex flex-col items-center justify-center gap-3 text-center">
+                        <div class="w-12 h-12 rounded-full bg-blue-50 text-blue-600 flex items-center justify-center">
+                            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12"></path></svg>
+                        </div>
+                        <div>
+                            <span class="block text-sm font-semibold text-slate-700">Click to upload PDF</span>
+                            <span class="block text-xs text-slate-400 mt-1">Maximum 50MB</span>
+                        </div>
+                    </label>
+                </div>
+
+                
+                <div class="bg-slate-50 p-4 rounded-2xl border border-slate-100 flex-1">
+                    <h2 class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4">Active File Details</h2>
+                    <div class="flex flex-col gap-4">
+                        <div>
+                            <span class="text-xs text-slate-500 block mb-1">Filename</span>
+                            <span id="statName" class="text-sm font-medium text-slate-800 block truncate">No file active</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-4">
+                            <div>
+                                <span class="text-xs text-slate-500 block mb-1">Pages</span>
+                                <span id="statPages" class="text-lg font-bold text-blue-600">0</span>
+                            </div>
+                            <div>
+                                <span class="text-xs text-slate-500 block mb-1">Vectors</span>
+                                <span id="statChunks" class="text-lg font-bold text-blue-600">0</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+       
+        <main class="flex-1 bg-white rounded-3xl premium-shadow flex flex-col overflow-hidden relative">
+            
+           
+            <header class="h-16 border-b border-slate-100 flex items-center px-6 bg-white/80 backdrop-blur-sm z-10 absolute top-0 w-full">
+                <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-green-500"></div>
+                    <span class="text-sm font-semibold text-slate-700">Assistant Online</span>
+                </div>
+            </header>
+
+            <div id="chatBox" class="flex-1 overflow-y-auto px-6 py-24 flex flex-col gap-6 scroll-smooth">
+              
+                <div class="flex gap-4 max-w-3xl items-end">
+                    <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mb-1">
+                        <span class="text-blue-600 text-sm">🤖</span>
+                    </div>
+                    <div class="chat-ai px-5 py-3.5 rounded-2xl text-sm leading-relaxed">
+                        Hello. I am your Enterprise Data Assistant. Upload a document using the sidebar, and I will help you extract insights, answer questions, and summarize information with pinpoint accuracy.
+                    </div>
+                </div>
+            </div>
+
+
+            <footer class="input-wrapper p-4 absolute bottom-0 w-full z-10">
+                <div class="max-w-4xl mx-auto flex gap-3 items-center bg-slate-50 border border-slate-200 rounded-2xl p-1.5 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all">
+                    <input type="text" id="messageInput" 
+                        class="w-full bg-transparent px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none"
+                        placeholder="Type your question here..."
+                        onkeypress="if(event.key === 'Enter') sendMessage()">
+                    
+                    <button onclick="sendMessage()" class="send-btn text-white p-2.5 rounded-xl flex items-center justify-center">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M12 5l7 7-7 7"></path></svg>
+                    </button>
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <script>
+       
+        const API_BASE_URL = (window.location.protocol === 'file:' || window.location.hostname.includes('googleusercontent') || window.location.hostname === '') 
+            ? 'http://127.0.0.1:8000' 
+            : window.location.origin; 
+            
+        const chatBox = document.getElementById('chatBox');
+        const messageInput = document.getElementById('messageInput');
+        
+        async function checkStatus() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/status`);
+                if (!res.ok) throw new Error("API not reachable");
+                const status = await res.json();
+                if (!status.has_key) document.getElementById('keyBadge').classList.remove('hidden');
+                if (status.file_loaded) updateFileInfo(status.file_info);
+            } catch (e) { 
+                console.warn("Backend API not reachable. Expected if previewing in Canvas or without the Python server running.", e.message); 
+                document.getElementById('keyBadge').classList.remove('hidden');
+            }
+        }
+
+        function updateFileInfo(info) {
+            document.getElementById('statName').textContent = info.filename;
+            document.getElementById('statPages').textContent = info.pages;
+            document.getElementById('statChunks').textContent = info.chunks;
+        }
+
+        function addBubble(text, isUser, type = 'text') {
+            const wrapper = document.createElement('div');
+            wrapper.className = `flex gap-4 max-w-3xl items-end opacity-0 transform translate-y-4 transition-all duration-300 ${isUser ? 'ml-auto flex-row-reverse' : ''}`;
+            
+            const avatar = isUser 
+                ? `<div class="w-8 h-8 rounded-full bg-slate-200 flex items-center justify-center shrink-0 mb-1"><span class="text-slate-500 text-xs font-bold">ME</span></div>`
+                : `<div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mb-1"><span class="text-blue-600 text-sm">🤖</span></div>`;
+            
+            const bubbleStyle = isUser ? 'chat-user rounded-2xl' : 'chat-ai rounded-2xl';
+            const errorStyle = type === 'error' ? 'bg-red-50 text-red-600 border-red-200' : '';
+
+          
+            let formattedText = text.replace(/\\n/g, '<br>').replace(/\\*\\*(.*?)\\*\\*/g, '<strong>$1</strong>');
+
+            wrapper.innerHTML = `
+                ${avatar}
+                <div class="${bubbleStyle} ${errorStyle} px-5 py-3.5 text-sm leading-relaxed">
+                    ${formattedText}
+                </div>
+            `;
+            
+            chatBox.appendChild(wrapper);
+            // Trigger animation
+            setTimeout(() => {
+                wrapper.classList.remove('opacity-0', 'translate-y-4');
+            }, 10);
+            chatBox.scrollTop = chatBox.scrollHeight;
+        }
+
+        async function uploadPDF() {
+            const input = document.getElementById('pdfInput');
+            const file = input.files[0];
+            if (!file) return;
+
+            document.getElementById('statName').textContent = "Processing: " + file.name;
+            
+            const formData = new FormData();
+            formData.append("file", file);
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/upload`, { method: "POST", body: formData });
+                const data = await response.json();
+                
+                if (response.ok) {
+                    updateFileInfo(data.file_info);
+                    addBubble(`Successfully indexed <strong>${file.name}</strong>. The document is ready for queries.`, false);
+                } else throw new Error(data.detail);
+            } catch (e) {
+                document.getElementById('statName').textContent = "Upload Failed";
+                addBubble(`Error: ${e.message}`, false, 'error');
+            }
+        }
+
+        async function sendMessage() {
+            const text = messageInput.value.trim();
+            if (!text) return;
+
+            addBubble(text, true);
+            messageInput.value = '';
+
+            
+            const typingId = "typing-" + Date.now();
+            const typingWrapper = document.createElement('div');
+            typingWrapper.id = typingId;
+            typingWrapper.className = "flex gap-4 max-w-3xl items-end opacity-0 transform translate-y-4 transition-all duration-300";
+            typingWrapper.innerHTML = `
+                <div class="w-8 h-8 rounded-full bg-blue-100 flex items-center justify-center shrink-0 mb-1">
+                    <span class="text-blue-600 text-sm">🤖</span>
+                </div>
+                <div class="chat-ai px-5 py-4 rounded-2xl flex items-center gap-1">
+                    <div class="w-2 h-2 bg-slate-300 rounded-full dot"></div>
+                    <div class="w-2 h-2 bg-slate-300 rounded-full dot"></div>
+                    <div class="w-2 h-2 bg-slate-300 rounded-full dot"></div>
+                </div>
+            `;
+            chatBox.appendChild(typingWrapper);
+            setTimeout(() => typingWrapper.classList.remove('opacity-0', 'translate-y-4'), 10);
+            chatBox.scrollTop = chatBox.scrollHeight;
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/chat`, {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ question: text })
+                });
+                const data = await response.json();
+                
+                document.getElementById(typingId).remove();
+                if (response.ok) addBubble(data.answer, false);
+                else addBubble(data.detail, false, 'error');
+            } catch (e) {
+                document.getElementById(typingId).remove();
+                addBubble("Network Error: Could not reach the server.", false, 'error');
+            }
+        }
+
+        window.onload = checkStatus;
+    </script>
+</body>
+</html>
